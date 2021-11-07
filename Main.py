@@ -22,27 +22,21 @@ pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("Testing")
-clock = pygame.time.Clock()
 
-#Images
-background_img = pygame.image.load(os.path.join("Image", "background1.jpeg")).convert()
-bullet_img = pygame.image.load(os.path.join("Image", "bullet.png")).convert()
-player_img = pygame.image.load(os.path.join("Image", "x-wing.png")).convert()
-#rock_img = pygame.image.load(os.path.join("Image", "rock.png")).convert()
-rock_imgs = []
-for i in range(7):
-    rock_imgs.append(pygame.image.load(os.path.join("Image", f"rock{i}.png")).convert())
-font_name = pygame.font.match_font("arial")
 
 # music 
 shoot_sound = pygame.mixer.Sound(os.path.join("Sound", "shoot.wav"))
 expl_sounds = [pygame.mixer.Sound(os.path.join("Sound", "expl0.wav")), pygame.mixer.Sound(os.path.join("Sound", "expl1.wav"))]
 for i in range(1):
     expl_sounds[i].set_volume(0.5)
-shoot_sound.set_volume(0.5)
+
 
 pygame.mixer.music.load(os.path.join("Sound", "background.ogg"))
 
+def load_img(filename):
+    pygame.image.load(os.path.join("Image", filename)).convert()
+
+font_name = pygame.font.match_font("arial")
 def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name,size)
     text_surface = font.render(text, True, WHITE)
@@ -67,6 +61,7 @@ def new_rock():
     all_sprites.add(r)
     rocks.add(r)
 
+player_img = load_image("x-wing.png")
 # Player sprite
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -91,12 +86,20 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0 
+    
     #generate bullet sprite
+    shoot_sound = pygame.mixer.Sound(os.path.join("Sound", "shoot.wav"))
+    shoot_sound.set_volume(0.5)
+
     def shoot(self):
         bullet = Bullet(self.rect.centerx, self.rect.top)
         all_sprites.add(bullet)
         bullets.add(bullet)
         shoot_sound.play()
+
+rock_imgs = []
+for i in range(7):
+    rock_imgs.append(pygame.image.load(os.path.join("Image", f"rock{i}.png")).convert())                      
 
 # rock sprite 
 class Rock(pygame.sprite.Sprite):  
@@ -124,9 +127,6 @@ class Rock(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = center
         
-        
-        
-
     def update(self):
        self.rotate()
        self.rect.y += self.speedy
@@ -137,7 +137,9 @@ class Rock(pygame.sprite.Sprite):
             self.speedy = random.randrange(2,10)
             self.speedx = random.randrange(-3,3)
             self.rot_degree = random.randrange(-3,3)
-
+                      
+bullet_img = load_image("bullet.png")
+                      
 # bullet spirte 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -180,6 +182,7 @@ pygame.mixer.music.play(-1)
 
 print(pygame.sprite.Group.sprites(rocks))
 # Display on  screen     
+clock = pygame.time.Clock()
 while running:
     #FPS
     clock.tick(FPS)
@@ -210,6 +213,7 @@ while running:
     
     # screen display
     screen.fill((BLACK))
+    background_img = pygame.image.load(os.path.join("Image", "background1.jpeg")).convert()
     screen.blit(background_img, (0,0))
     all_sprites.draw(screen)  
     draw_text(screen, str(score), 18, WIDTH/2, 10)
