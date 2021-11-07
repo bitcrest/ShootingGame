@@ -22,10 +22,7 @@ pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("Testing")
-
-
 # music 
-shoot_sound = pygame.mixer.Sound(os.path.join("Sound", "shoot.wav"))
 expl_sounds = [pygame.mixer.Sound(os.path.join("Sound", "expl0.wav")), pygame.mixer.Sound(os.path.join("Sound", "expl1.wav"))]
 for i in range(1):
     expl_sounds[i].set_volume(0.5)
